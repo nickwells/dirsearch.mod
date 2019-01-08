@@ -31,8 +31,8 @@ func ExampleFind() {
 	// file: testdata/examples/dir1/subdir1 = Non-Empty
 }
 
-// ExampleFind_withChecks demonstrates use of the Find function with checks
-// supplied to return only non-empty regular files
+// This demonstrates use of the Find function with checks supplied to return
+// only non-empty regular files
 func ExampleFind_withChecks() {
 	info, errs := dirsearch.Find("testdata/examples/dir1",
 		check.FileInfoSize(check.Int64GT(0)),
@@ -56,8 +56,8 @@ func ExampleFind_withChecks() {
 	// file: testdata/examples/dir1/.non-empty-hidden-file1 = Non-Empty
 }
 
-// ExampleFindRecurse_withChecks demonstrates use of the FindRecurse function
-// with checks supplied to return only non-empty regular files
+// This demonstrates use of the FindRecurse function with checks supplied to
+// return only non-empty regular files
 func ExampleFindRecurse_withChecks() {
 	info, errs := dirsearch.FindRecurse("testdata/examples/dir1",
 		check.FileInfoSize(check.Int64GT(0)),
@@ -84,10 +84,10 @@ func ExampleFindRecurse_withChecks() {
 	// file: testdata/examples/dir1/.non-empty-hidden-file1 = Non-Empty
 }
 
-// ExampleFindRecursePrune_withChecks demonstrates use of the
-// FindRecursePrune function with checks supplied to return only non-empty
-// regular files and a slice of directory checks provided to prevent descent
-// into hidden directories (those with a name starting with a '.')
+// This demonstrates use of the FindRecursePrune function with checks
+// supplied to return only non-empty regular files and a slice of directory
+// checks provided to prevent descent into hidden directories (those with a
+// name starting with a '.')
 func ExampleFindRecursePrune_withChecks() {
 	info, errs := dirsearch.FindRecursePrune("testdata/examples/dir1",
 		-1, []check.FileInfo{
