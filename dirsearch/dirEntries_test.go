@@ -81,7 +81,7 @@ func TestCount(t *testing.T) {
 	}
 
 	for i, tc := range testCases {
-		tcID := fmt.Sprintf("test %d: %s :", i, tc.name)
+		tcID := fmt.Sprintf("test %d: %s", i, tc.name)
 
 		n, errs := dirsearch.Count(tc.dirName, tc.checks...)
 		var err error
