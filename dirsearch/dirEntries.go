@@ -34,7 +34,7 @@ func passesChecks(fi os.FileInfo, checks []check.FileInfo) bool {
 
 // dirPassesChecks checks that the directory passes all the checks given - on
 // directory depth and the FileInfo checks. It also tests that the names are
-// neither of ".", or ".."; strictly this is unneccessary as os.Readdir
+// neither of ".", or ".."; strictly this is unnecessary as os.Readdir
 // already excludes these entries but this is a bug (which would break the Go
 // compatibility promise if it was fixed - sigh)
 func dirPassesChecks(fi os.FileInfo, depth, maxDepth int, checks []check.FileInfo) bool {
