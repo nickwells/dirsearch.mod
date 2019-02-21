@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"path"
 	"testing"
-	"time"
 
 	"github.com/nickwells/check.mod/check"
 	"github.com/nickwells/dirsearch.mod/dirsearch"
@@ -26,7 +25,6 @@ func TestCount(t *testing.T) {
 		countExpRecurse      int
 		countExpRecursePrune int
 		dirName              string
-		modTime              time.Time
 	}{
 		{
 			name:        "bad directory: " + badDirName,

@@ -11,12 +11,13 @@ import (
 // the os.Readdir func internally and so the FileInfo details do not follow
 // symlinks
 func getDirInfo(name string) ([]os.FileInfo, error) {
+	// nolint: gosec
 	d, err := os.Open(name)
 	if err != nil {
 		return []os.FileInfo{}, err
 	}
 
-	defer d.Close()
+	defer d.Close() // nolint: errcheck
 
 	return d.Readdir(0)
 }
