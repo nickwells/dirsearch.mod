@@ -1,7 +1,6 @@
 package dirsearch_test
 
 import (
-	"fmt"
 	"path"
 	"testing"
 
@@ -16,28 +15,29 @@ func TestCount(t *testing.T) {
 	fileName := path.Join("testdata", "IsAFile")
 
 	testCases := []struct {
-		name                 string
+		testhelper.ID
+		testhelper.ExpErr
 		checks               []check.FileInfo
 		dirChecks            []check.FileInfo
 		maxDepth             int
-		errExpected          bool
 		countExp             int
 		countExpRecurse      int
 		countExpRecursePrune int
 		dirName              string
 	}{
 		{
-			name:        "bad directory: " + badDirName,
-			errExpected: true,
-			dirName:     badDirName,
+			ID: testhelper.MkID("bad directory: " + badDirName),
+			ExpErr: testhelper.MkExpErr(badDirName,
+				"no such file or directory"),
+			dirName: badDirName,
 		},
 		{
-			name:        "Not a directory: " + fileName,
-			errExpected: true,
-			dirName:     fileName,
+			ID:      testhelper.MkID("Not a directory: " + fileName),
+			ExpErr:  testhelper.MkExpErr("not a directory"),
+			dirName: fileName,
 		},
 		{
-			name:                 "all entries",
+			ID:                   testhelper.MkID("all entries"),
 			maxDepth:             0,
 			countExp:             5,
 			countExpRecurse:      8,
@@ -45,7 +45,7 @@ func TestCount(t *testing.T) {
 			dirName:              goodDirName,
 		},
 		{
-			name: "all files",
+			ID: testhelper.MkID("all files"),
 			checks: []check.FileInfo{
 				check.FileInfoIsRegular,
 			},
@@ -56,7 +56,7 @@ func TestCount(t *testing.T) {
 			dirName:              goodDirName,
 		},
 		{
-			name: "all files - ignore hidden files (leading '.')",
+			ID: testhelper.MkID("all files - ignore hidden files (leading '.')"),
 			checks: []check.FileInfo{
 				check.FileInfoIsRegular,
 				check.FileInfoNot(
@@ -78,18 +78,16 @@ func TestCount(t *testing.T) {
 		},
 	}
 
-	for i, tc := range testCases {
-		tcID := fmt.Sprintf("test %d: %s", i, tc.name)
-
+	for _, tc := range testCases {
 		n, errs := dirsearch.Count(tc.dirName, tc.checks...)
 		var err error
 		if len(errs) > 0 {
 			err = errs[0]
 		}
-		testhelper.CheckError(t, tcID, err, tc.errExpected, []string{})
+		testhelper.CheckExpErr(t, err, tc)
 
 		if n != tc.countExp {
-			t.Logf("test %d: %s :\n", i, tc.name)
+			t.Log(tc.IDStr())
 			t.Logf("\t: Count() in dir: %s\n", tc.dirName)
 			t.Errorf("\t: expected count: %d got: %d\n", tc.countExp, n)
 		}
@@ -99,10 +97,10 @@ func TestCount(t *testing.T) {
 		if len(errs) > 0 {
 			err = errs[0]
 		}
-		testhelper.CheckError(t, tcID, err, tc.errExpected, []string{})
+		testhelper.CheckExpErr(t, err, tc)
 
 		if n != tc.countExpRecurse {
-			t.Logf("test %d: %s :\n", i, tc.name)
+			t.Log(tc.IDStr())
 			t.Logf("\t: CountRecurse() in dir: %s\n", tc.dirName)
 			t.Errorf("\t: expected count: %d got: %d\n", tc.countExpRecurse, n)
 		}
@@ -116,10 +114,10 @@ func TestCount(t *testing.T) {
 		if len(errs) > 0 {
 			err = errs[0]
 		}
-		testhelper.CheckError(t, tcID, err, tc.errExpected, []string{})
+		testhelper.CheckExpErr(t, err, tc)
 
 		if n != tc.countExpRecursePrune {
-			t.Logf("test %d: %s :\n", i, tc.name)
+			t.Log(tc.IDStr())
 			t.Logf("\t: CountRecursePrune() in dir: %s\n", tc.dirName)
 			t.Errorf("\t: expected count: %d got: %d\n",
 				tc.countExpRecursePrune, n)
