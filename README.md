@@ -1,3 +1,5 @@
+[![GoDoc](https://godoc.org/github.com/nickwells/dirsearch.mod?status.png)](https://godoc.org/github.com/nickwells/dirsearch.mod)
+
 # dirsearch
 Some useful functions for searching directories and returning useful information.
 
