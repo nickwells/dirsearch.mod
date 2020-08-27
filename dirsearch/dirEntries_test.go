@@ -1,6 +1,7 @@
 package dirsearch_test
 
 import (
+	"fmt"
 	"path"
 	"testing"
 
@@ -10,8 +11,8 @@ import (
 )
 
 func TestCount(t *testing.T) {
-	goodDirName := path.Join("testdata", "IsADirectory")
-	badDirName := path.Join("testdata", "NoSuchDir")
+	goodDir := path.Join("testdata", "IsADirectory")
+	badDir := path.Join("testdata", "NoSuchDir")
 	fileName := path.Join("testdata", "IsAFile")
 
 	testCases := []struct {
@@ -26,10 +27,9 @@ func TestCount(t *testing.T) {
 		dirName              string
 	}{
 		{
-			ID: testhelper.MkID("bad directory: " + badDirName),
-			ExpErr: testhelper.MkExpErr(badDirName,
-				"no such file or directory"),
-			dirName: badDirName,
+			ID:      testhelper.MkID("Bad directory: " + badDir),
+			ExpErr:  testhelper.MkExpErr(badDir, "no such file or directory"),
+			dirName: badDir,
 		},
 		{
 			ID:      testhelper.MkID("Not a directory: " + fileName),
@@ -42,85 +42,64 @@ func TestCount(t *testing.T) {
 			countExp:             5,
 			countExpRecurse:      8,
 			countExpRecursePrune: 5,
-			dirName:              goodDirName,
+			dirName:              goodDir,
 		},
 		{
-			ID: testhelper.MkID("all files"),
-			checks: []check.FileInfo{
-				check.FileInfoIsRegular,
-			},
+			ID:                   testhelper.MkID("All files"),
+			checks:               []check.FileInfo{check.FileInfoIsRegular},
 			maxDepth:             1,
 			countExp:             3,
 			countExpRecurse:      6,
 			countExpRecursePrune: 6,
-			dirName:              goodDirName,
+			dirName:              goodDir,
 		},
 		{
-			ID: testhelper.MkID("all files - ignore hidden files (leading '.')"),
+			ID: testhelper.MkID("All files - no hidden files (leading '.')"),
 			checks: []check.FileInfo{
 				check.FileInfoIsRegular,
 				check.FileInfoNot(
-					check.FileInfoName(
-						check.StringHasPrefix(".")),
-					""),
+					check.FileInfoName(check.StringHasPrefix(".")), ""),
 			},
 			dirChecks: []check.FileInfo{
 				check.FileInfoNot(
-					check.FileInfoName(
-						check.StringHasPrefix(".")),
-					""),
+					check.FileInfoName(check.StringHasPrefix(".")), ""),
 			},
 			maxDepth:             -1,
 			countExp:             2,
 			countExpRecurse:      5,
 			countExpRecursePrune: 4,
-			dirName:              goodDirName,
+			dirName:              goodDir,
 		},
 	}
 
 	for _, tc := range testCases {
+		id := fmt.Sprintf("%s - Count(%q, ...)",
+			tc.IDStr(), tc.dirName)
 		n, errs := dirsearch.Count(tc.dirName, tc.checks...)
-		var err error
-		if len(errs) > 0 {
-			err = errs[0]
-		}
-		testhelper.CheckExpErr(t, err, tc)
+		testhelper.CheckExpErrWithID(t, id, errFromErrs(errs), tc)
+		testhelper.CmpValInt(t, id, "count", n, tc.countExp)
 
-		if n != tc.countExp {
-			t.Log(tc.IDStr())
-			t.Logf("\t: Count() in dir: %s\n", tc.dirName)
-			t.Errorf("\t: expected count: %d got: %d\n", tc.countExp, n)
-		}
-
+		id = fmt.Sprintf("%s - CountRecurse(%q, ...)",
+			tc.IDStr(), tc.dirName)
 		n, errs = dirsearch.CountRecurse(tc.dirName, tc.checks...)
-		err = nil
-		if len(errs) > 0 {
-			err = errs[0]
-		}
-		testhelper.CheckExpErr(t, err, tc)
+		testhelper.CheckExpErrWithID(t, id, errFromErrs(errs), tc)
+		testhelper.CmpValInt(t, id, "count", n, tc.countExpRecurse)
 
-		if n != tc.countExpRecurse {
-			t.Log(tc.IDStr())
-			t.Logf("\t: CountRecurse() in dir: %s\n", tc.dirName)
-			t.Errorf("\t: expected count: %d got: %d\n", tc.countExpRecurse, n)
-		}
-
-		n, errs = dirsearch.CountRecursePrune(
-			tc.dirName,
-			tc.maxDepth,
-			tc.dirChecks,
+		id = fmt.Sprintf("%s - CountRecursePrune(%q, ...)",
+			tc.IDStr(), tc.dirName)
+		n, errs = dirsearch.CountRecursePrune(tc.dirName,
+			tc.maxDepth, tc.dirChecks,
 			tc.checks...)
-		err = nil
-		if len(errs) > 0 {
-			err = errs[0]
-		}
-		testhelper.CheckExpErr(t, err, tc)
-
-		if n != tc.countExpRecursePrune {
-			t.Log(tc.IDStr())
-			t.Logf("\t: CountRecursePrune() in dir: %s\n", tc.dirName)
-			t.Errorf("\t: expected count: %d got: %d\n",
-				tc.countExpRecursePrune, n)
-		}
+		testhelper.CheckExpErrWithID(t, id, errFromErrs(errs), tc)
+		testhelper.CmpValInt(t, id, "count", n, tc.countExpRecursePrune)
 	}
+}
+
+// errFromErrs returns the first error from the slice of errors if the slice
+// is non-empty and nil otherwise
+func errFromErrs(errs []error) error {
+	if len(errs) == 0 {
+		return nil
+	}
+	return errs[0]
 }
