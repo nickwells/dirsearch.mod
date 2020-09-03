@@ -77,13 +77,13 @@ func TestCount(t *testing.T) {
 			tc.IDStr(), tc.dirName)
 		n, errs := dirsearch.Count(tc.dirName, tc.checks...)
 		testhelper.CheckExpErrWithID(t, id, errFromErrs(errs), tc)
-		testhelper.CmpValInt(t, id, "count", n, tc.countExp)
+		testhelper.DiffInt(t, id, "count", n, tc.countExp)
 
 		id = fmt.Sprintf("%s - CountRecurse(%q, ...)",
 			tc.IDStr(), tc.dirName)
 		n, errs = dirsearch.CountRecurse(tc.dirName, tc.checks...)
 		testhelper.CheckExpErrWithID(t, id, errFromErrs(errs), tc)
-		testhelper.CmpValInt(t, id, "count", n, tc.countExpRecurse)
+		testhelper.DiffInt(t, id, "count", n, tc.countExpRecurse)
 
 		id = fmt.Sprintf("%s - CountRecursePrune(%q, ...)",
 			tc.IDStr(), tc.dirName)
@@ -91,7 +91,7 @@ func TestCount(t *testing.T) {
 			tc.maxDepth, tc.dirChecks,
 			tc.checks...)
 		testhelper.CheckExpErrWithID(t, id, errFromErrs(errs), tc)
-		testhelper.CmpValInt(t, id, "count", n, tc.countExpRecursePrune)
+		testhelper.DiffInt(t, id, "count", n, tc.countExpRecursePrune)
 	}
 }
 
