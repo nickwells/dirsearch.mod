@@ -7,7 +7,7 @@ import (
 
 	"github.com/nickwells/check.mod/check"
 	"github.com/nickwells/dirsearch.mod/dirsearch"
-	"github.com/nickwells/testhelper.mod/testhelper"
+	"github.com/nickwells/testhelper.mod/v2/testhelper"
 )
 
 func TestCount(t *testing.T) {

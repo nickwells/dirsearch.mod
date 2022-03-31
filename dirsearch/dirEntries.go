@@ -38,7 +38,9 @@ func passesChecks(fi os.FileInfo, checks []check.FileInfo) bool {
 // neither of ".", or ".."; strictly this is unnecessary as os.Readdir
 // already excludes these entries but this is a bug (which would break the Go
 // compatibility promise if it was fixed - sigh)
-func dirPassesChecks(fi os.FileInfo, depth, maxDepth int, checks []check.FileInfo) bool {
+func dirPassesChecks(fi os.FileInfo, depth, maxDepth int,
+	checks []check.FileInfo,
+) bool {
 	subDirName := fi.Name()
 	if subDirName == "." {
 		return false
@@ -53,7 +55,9 @@ func dirPassesChecks(fi os.FileInfo, depth, maxDepth int, checks []check.FileInf
 }
 
 // find ...
-func find(dirName string, depth, maxDepth int, dirChecks, checks []check.FileInfo) (map[string]os.FileInfo, []error) {
+func find(dirName string, depth, maxDepth int,
+	dirChecks, checks []check.FileInfo,
+) (map[string]os.FileInfo, []error) {
 	allInfo, err := getDirInfo(dirName)
 	if err != nil {
 		return map[string]os.FileInfo{}, []error{err}
@@ -90,7 +94,8 @@ func find(dirName string, depth, maxDepth int, dirChecks, checks []check.FileInf
 // entries in the directory which are themselves directories (except for "."
 // and "..") are descended into and the search continues in that
 // sub-directory
-func FindRecurse(dirName string, checks ...check.FileInfo) (map[string]os.FileInfo, []error) {
+func FindRecurse(dirName string, checks ...check.FileInfo,
+) (map[string]os.FileInfo, []error) {
 	return find(dirName,
 		0, -1,
 		[]check.FileInfo{}, checks)
@@ -104,7 +109,9 @@ func FindRecurse(dirName string, checks ...check.FileInfo) (map[string]os.FileIn
 // checked to see that they are not too deep and that they pass the dirChecks
 // and skipped if not. Pass a maxDepth < 0 to ignore the depth of descent
 // down the directory tree.
-func FindRecursePrune(dirName string, maxDepth int, dirChecks []check.FileInfo, checks ...check.FileInfo) (map[string]os.FileInfo, []error) {
+func FindRecursePrune(dirName string, maxDepth int,
+	dirChecks []check.FileInfo, checks ...check.FileInfo,
+) (map[string]os.FileInfo, []error) {
 	return find(dirName,
 		0, maxDepth,
 		dirChecks, checks)
@@ -114,7 +121,9 @@ func FindRecursePrune(dirName string, maxDepth int, dirChecks []check.FileInfo, 
 // for which all the checks return true. Any errors are also returned. The
 // details are returned in a map of file names (including the directory
 // prefix) to FileInfo
-func Find(dirName string, checks ...check.FileInfo) (map[string]os.FileInfo, []error) {
+func Find(dirName string,
+	checks ...check.FileInfo,
+) (map[string]os.FileInfo, []error) {
 	return find(dirName, 0, 0, []check.FileInfo{}, checks)
 }
 
@@ -136,7 +145,9 @@ func CountRecurse(name string, checks ...check.FileInfo) (int, []error) {
 // CountRecursePrune returns the number of entries in the directory and any
 // sub-directories that match the supplied checks (if any) and any errors
 // detected
-func CountRecursePrune(name string, maxDepth int, dirChecks []check.FileInfo, checks ...check.FileInfo) (int, []error) {
+func CountRecursePrune(name string, maxDepth int,
+	dirChecks []check.FileInfo, checks ...check.FileInfo,
+) (int, []error) {
 	info, err := FindRecursePrune(name, maxDepth, dirChecks, checks...)
 	return len(info), err
 }
