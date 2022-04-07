@@ -2,9 +2,10 @@ package dirsearch_test
 
 import (
 	"fmt"
+	"os"
 
-	"github.com/nickwells/check.mod/check"
-	"github.com/nickwells/dirsearch.mod/dirsearch"
+	"github.com/nickwells/check.mod/v2/check"
+	"github.com/nickwells/dirsearch.mod/v2/dirsearch"
 )
 
 func ExampleFind() {
@@ -35,7 +36,7 @@ func ExampleFind() {
 // only non-empty regular files
 func ExampleFind_withChecks() {
 	info, errs := dirsearch.Find("testdata/examples/dir1",
-		check.FileInfoSize(check.Int64GT(0)),
+		check.FileInfoSize(check.ValGT[int64](0)),
 		check.FileInfoIsRegular)
 	if len(errs) != 0 {
 		fmt.Println("Unexpected errors")
@@ -60,7 +61,7 @@ func ExampleFind_withChecks() {
 // return only non-empty regular files
 func ExampleFindRecurse_withChecks() {
 	info, errs := dirsearch.FindRecurse("testdata/examples/dir1",
-		check.FileInfoSize(check.Int64GT(0)),
+		check.FileInfoSize(check.ValGT[int64](0)),
 		check.FileInfoIsRegular)
 	if len(errs) != 0 {
 		fmt.Println("Unexpected errors")
@@ -90,13 +91,13 @@ func ExampleFindRecurse_withChecks() {
 // name starting with a '.')
 func ExampleFindRecursePrune_withChecks() {
 	info, errs := dirsearch.FindRecursePrune("testdata/examples/dir1",
-		-1, []check.FileInfo{
+		-1, []check.ValCk[os.FileInfo]{
 			check.FileInfoName(
-				check.StringNot(
-					check.StringHasPrefix("."),
+				check.Not(
+					check.StringHasPrefix[string]("."),
 					"no leading '.'")),
 		},
-		check.FileInfoSize(check.Int64GT(0)),
+		check.FileInfoSize(check.ValGT[int64](0)),
 		check.FileInfoIsRegular)
 	if len(errs) != 0 {
 		fmt.Println("Unexpected errors")

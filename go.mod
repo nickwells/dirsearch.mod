@@ -1,7 +1,7 @@
-module github.com/nickwells/dirsearch.mod
+module github.com/nickwells/dirsearch.mod/v2
 
 require (
-	github.com/nickwells/check.mod v1.6.17
+	github.com/nickwells/check.mod/v2 v2.0.0
 	github.com/nickwells/testhelper.mod/v2 v2.0.0
 )
 

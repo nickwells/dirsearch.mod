@@ -2,11 +2,12 @@ package dirsearch_test
 
 import (
 	"fmt"
+	"os"
 	"path"
 	"testing"
 
-	"github.com/nickwells/check.mod/check"
-	"github.com/nickwells/dirsearch.mod/dirsearch"
+	"github.com/nickwells/check.mod/v2/check"
+	"github.com/nickwells/dirsearch.mod/v2/dirsearch"
 	"github.com/nickwells/testhelper.mod/v2/testhelper"
 )
 
@@ -18,8 +19,8 @@ func TestCount(t *testing.T) {
 	testCases := []struct {
 		testhelper.ID
 		testhelper.ExpErr
-		checks               []check.FileInfo
-		dirChecks            []check.FileInfo
+		checks               []check.ValCk[os.FileInfo]
+		dirChecks            []check.ValCk[os.FileInfo]
 		maxDepth             int
 		countExp             int
 		countExpRecurse      int
@@ -45,8 +46,9 @@ func TestCount(t *testing.T) {
 			dirName:              goodDir,
 		},
 		{
-			ID:                   testhelper.MkID("All files"),
-			checks:               []check.FileInfo{check.FileInfoIsRegular},
+			ID:     testhelper.MkID("All files"),
+			checks: []check.ValCk[os.FileInfo]{check.FileInfoIsRegular},
+
 			maxDepth:             1,
 			countExp:             3,
 			countExpRecurse:      6,
@@ -55,14 +57,14 @@ func TestCount(t *testing.T) {
 		},
 		{
 			ID: testhelper.MkID("All files - no hidden files (leading '.')"),
-			checks: []check.FileInfo{
+			checks: []check.ValCk[os.FileInfo]{
 				check.FileInfoIsRegular,
-				check.FileInfoNot(
-					check.FileInfoName(check.StringHasPrefix(".")), ""),
+				check.Not(
+					check.FileInfoName(check.StringHasPrefix[string](".")), ""),
 			},
-			dirChecks: []check.FileInfo{
-				check.FileInfoNot(
-					check.FileInfoName(check.StringHasPrefix(".")), ""),
+			dirChecks: []check.ValCk[os.FileInfo]{
+				check.Not(
+					check.FileInfoName(check.StringHasPrefix[string](".")), ""),
 			},
 			maxDepth:             -1,
 			countExp:             2,
