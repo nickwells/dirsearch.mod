@@ -103,5 +103,6 @@ func errFromErrs(errs []error) error {
 	if len(errs) == 0 {
 		return nil
 	}
+
 	return errs[0]
 }

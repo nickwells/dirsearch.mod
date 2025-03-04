@@ -12,16 +12,20 @@ func ExampleFind() {
 	info, errs := dirsearch.Find("testdata/examples/dir1")
 	if len(errs) != 0 {
 		fmt.Println("Unexpected errors")
+
 		for _, err := range errs {
 			fmt.Println("\t", err)
 		}
+
 		return
 	}
+
 	for k, v := range info {
 		sizeStr := "Non-Empty"
 		if v.Size() == 0 {
 			sizeStr = "Empty"
 		}
+
 		fmt.Println("file:", k, "=", sizeStr)
 	}
 	// Unordered output:
@@ -40,16 +44,20 @@ func ExampleFind_withChecks() {
 		check.FileInfoIsRegular)
 	if len(errs) != 0 {
 		fmt.Println("Unexpected errors")
+
 		for _, err := range errs {
 			fmt.Println("\t", err)
 		}
+
 		return
 	}
+
 	for k, v := range info {
 		sizeStr := "Non-Empty"
 		if v.Size() == 0 {
 			sizeStr = "Empty"
 		}
+
 		fmt.Println("file:", k, "=", sizeStr)
 	}
 	// Unordered output:
@@ -65,16 +73,20 @@ func ExampleFindRecurse_withChecks() {
 		check.FileInfoIsRegular)
 	if len(errs) != 0 {
 		fmt.Println("Unexpected errors")
+
 		for _, err := range errs {
 			fmt.Println("\t", err)
 		}
+
 		return
 	}
+
 	for k, v := range info {
 		sizeStr := "Non-Empty"
 		if v.Size() == 0 {
 			sizeStr = "Empty"
 		}
+
 		fmt.Println("file:", k, "=", sizeStr)
 	}
 	// Unordered output:
@@ -101,16 +113,20 @@ func ExampleFindRecursePrune_withChecks() {
 		check.FileInfoIsRegular)
 	if len(errs) != 0 {
 		fmt.Println("Unexpected errors")
+
 		for _, err := range errs {
 			fmt.Println("\t", err)
 		}
+
 		return
 	}
+
 	for k, v := range info {
 		sizeStr := "Non-Empty"
 		if v.Size() == 0 {
 			sizeStr = "Empty"
 		}
+
 		fmt.Println("file:", k, "=", sizeStr)
 	}
 	// Unordered output:

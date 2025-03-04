@@ -12,13 +12,12 @@ import (
 // the os.Readdir func internally and so the FileInfo details do not follow
 // symlinks
 func getDirInfo(name string) ([]fs.FileInfo, error) {
-	// nolint: gosec
 	d, err := os.Open(name)
 	if err != nil {
 		return []fs.FileInfo{}, err
 	}
 
-	defer d.Close() // nolint: errcheck
+	defer d.Close()
 
 	return d.Readdir(0)
 }
@@ -31,6 +30,7 @@ func passesChecks(fi fs.FileInfo, checks []check.FileInfo) bool {
 			return false
 		}
 	}
+
 	return true
 }
 
@@ -46,12 +46,15 @@ func dirPassesChecks(fi fs.FileInfo, depth, maxDepth int,
 	if subDirName == "." {
 		return false
 	}
+
 	if subDirName == ".." {
 		return false
 	}
+
 	if maxDepth >= 0 && (depth+1) > maxDepth {
 		return false
 	}
+
 	return passesChecks(fi, checks)
 }
 
@@ -79,12 +82,14 @@ func find(dirName string, depth, maxDepth int,
 					depth+1, maxDepth,
 					dirChecks, checks)
 				errors = append(errors, subDirErrors...)
+
 				for k, v := range subDirInfo {
 					info[k] = v
 				}
 			}
 		}
 	}
+
 	return info, errors
 }
 
