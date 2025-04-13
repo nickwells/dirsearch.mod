@@ -2,6 +2,7 @@ package dirsearch
 
 import (
 	"io/fs"
+	"maps"
 	"os"
 	"path/filepath"
 
@@ -83,9 +84,7 @@ func find(dirName string, depth, maxDepth int,
 					dirChecks, checks)
 				errors = append(errors, subDirErrors...)
 
-				for k, v := range subDirInfo {
-					info[k] = v
-				}
+				maps.Copy(info, subDirInfo)
 			}
 		}
 	}
